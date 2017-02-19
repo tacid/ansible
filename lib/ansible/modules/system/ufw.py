@@ -288,8 +288,10 @@ def main():
     ufw_bin = module.get_bin_path('ufw', True)
 
     # Save the pre state and rules in order to recognize changes
+    # The 'show added' command wasn't available until v0.33, so check the rules files directly
+    # Location of rules changed to /etc/ufw/ in v0.35
     (_, pre_state, _) = module.run_command(ufw_bin + ' status verbose')
-    (_, pre_rules, _) = module.run_command("grep '^### tuple' /lib/ufw/user*.rules")
+    (_, pre_rules, _) = module.run_command("grep '^### tuple' /lib/ufw/user*.rules /etc/ufw/user*.rules")
 
     # Execute commands
     for (command, value) in commands.items():
@@ -332,7 +334,7 @@ def main():
 
     # Get the new state
     (_, post_state, _) = module.run_command(ufw_bin + ' status verbose')
-    (_, post_rules, _) = module.run_command("grep '^### tuple' /lib/ufw/user*.rules")
+    (_, post_rules, _) = module.run_command("grep '^### tuple' /lib/ufw/user*.rules /etc/ufw/user*.rules")
     changed = (pre_state != post_state) or (pre_rules != post_rules)
 
     return module.exit_json(changed=changed, commands=cmds, msg=post_state.rstrip())
