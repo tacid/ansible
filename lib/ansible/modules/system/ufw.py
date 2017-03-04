@@ -129,6 +129,7 @@ options:
     description:
       - Add a comment to the rule. Requires UFW version >=0.35.
     required: false
+    version_added: "2.3"
 '''
 
 EXAMPLES = '''
